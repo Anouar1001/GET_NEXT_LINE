@@ -6,7 +6,7 @@
 /*   By: aboukhmi <aboukhmi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 20:12:07 by aboukhmi          #+#    #+#             */
-/*   Updated: 2024/11/24 22:56:56 by aboukhmi         ###   ########.fr       */
+/*   Updated: 2024/11/26 19:04:55 by aboukhmi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,9 @@ char	*get_backup(int fd, char *backup)
 	ssize_t	l;
 
 	l = 1;
-	mini_buff = (char *)ft_calloc((size_t)BUFFER_SIZE + 1, sizeof(char));
+	mini_buff = (char *)malloc((size_t)BUFFER_SIZE + 1 * sizeof(char));
+	if (!mini_buff)
+		return (NULL);
 	while (l > 0 && !ft_strchr(backup, '\n'))
 	{
 		l = read(fd, mini_buff, BUFFER_SIZE);
@@ -59,13 +61,15 @@ char	*get_line_lina(char *backup)
 
 	i = 0;
 	j = 0;
-	if (!backup || !*backup)
+	if (!*backup)
 		return (NULL);
 	while (backup[i] != '\n' && backup[i])
 		i++;
 	if (backup[i] == '\n')
 		i++;
-	res_line = (char *)ft_calloc(i + 1, sizeof(char));
+	res_line = (char *)malloc(i + 1 * sizeof(char));
+	if (!res_line)
+		return (NULL);
 	while (j < i)
 	{
 		res_line[j] = backup[j];
@@ -90,7 +94,9 @@ char	*update_backup(char *backup)
 		free(backup);
 		return (NULL);
 	}
-	new_backup = (char *)ft_calloc(((ft_strlen(backup) - i) + 1), sizeof(char));
+	new_backup = (char *)malloc(((ft_strlen(backup) - i) + 1) * sizeof(char));
+	if (!new_backup)
+		return (NULL);
 	i++;
 	while (backup[i] != '\0')
 		new_backup[j++] = backup[i++];
@@ -101,15 +107,17 @@ char	*update_backup(char *backup)
 
 char	*get_next_line(int fd)
 {
-	static char	*backup = NULL;
+	static char	*backup;
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE < 1)
+	if (fd < 0 || BUFFER_SIZE < 1 || BUFFER_SIZE > INT_MAX)
 		return (NULL);
 	backup = get_backup(fd, backup);
 	if (!backup)
 		return (NULL);
 	line = get_line_lina(backup);
+	if (!backup)
+		return (NULL);
 	backup = update_backup(backup);
 	return (line);
 }

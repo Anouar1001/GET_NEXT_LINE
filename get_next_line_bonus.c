@@ -6,7 +6,7 @@
 /*   By: aboukhmi <aboukhmi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 23:17:37 by aboukhmi          #+#    #+#             */
-/*   Updated: 2024/11/24 23:24:52 by aboukhmi         ###   ########.fr       */
+/*   Updated: 2024/11/26 19:05:33 by aboukhmi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,15 @@ char	*ft_strchr(const char *s, int c)
 		return (NULL);
 }
 
-char	*get_backup_bonus(int fd, char *backup)
+char	*get_backup(int fd, char *backup)
 {
 	char	*mini_buff;
 	ssize_t	l;
 
 	l = 1;
-	mini_buff = (char *)ft_calloc((size_t)BUFFER_SIZE + 1, sizeof(char));
+	mini_buff = (char *)malloc((size_t)BUFFER_SIZE + 1 * sizeof(char));
+	if (!mini_buff)
+		return (NULL);
 	while (l > 0 && !ft_strchr(backup, '\n'))
 	{
 		l = read(fd, mini_buff, BUFFER_SIZE);
@@ -51,7 +53,7 @@ char	*get_backup_bonus(int fd, char *backup)
 	return (backup);
 }
 
-char	*get_line_bonus(char *backup)
+char	*get_line_lina(char *backup)
 {
 	int		i;
 	int		j;
@@ -59,13 +61,15 @@ char	*get_line_bonus(char *backup)
 
 	i = 0;
 	j = 0;
-	if (!backup || !*backup)
+	if (!*backup)
 		return (NULL);
 	while (backup[i] != '\n' && backup[i])
 		i++;
 	if (backup[i] == '\n')
 		i++;
-	res_line = (char *)ft_calloc(i + 1, sizeof(char));
+	res_line = (char *)malloc(i + 1 * sizeof(char));
+	if (!res_line)
+		return (NULL);
 	while (j < i)
 	{
 		res_line[j] = backup[j];
@@ -75,7 +79,7 @@ char	*get_line_bonus(char *backup)
 	return (res_line);
 }
 
-char	*update_backup_bonus(char *backup)
+char	*update_backup(char *backup)
 {
 	char	*new_backup;
 	int		i;
@@ -90,7 +94,9 @@ char	*update_backup_bonus(char *backup)
 		free(backup);
 		return (NULL);
 	}
-	new_backup = (char *)ft_calloc(((ft_strlen(backup) - i) + 1), sizeof(char));
+	new_backup = (char *)malloc(((ft_strlen(backup) - i) + 1) * sizeof(char));
+	if (!new_backup)
+		return (NULL);
 	i++;
 	while (backup[i] != '\0')
 		new_backup[j++] = backup[i++];
@@ -104,12 +110,14 @@ char	*get_next_line(int fd)
 	static char	*backup[OPEN_MAX];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE < 1)
+	if (fd < 0 || BUFFER_SIZE < 1 || BUFFER_SIZE > INT_MAX || fd > OPEN_MAX)
 		return (NULL);
-	backup[fd] = get_backup_bonus(fd, backup[fd]);
+	backup[fd] = get_backup(fd, backup[fd]);
 	if (!backup[fd])
 		return (NULL);
-	line = get_line_bonus(backup[fd]);
-	backup[fd] = update_backup_bonus(backup[fd]);
+	line = get_line_lina(backup[fd]);
+	if (!backup[fd])
+		return (NULL);
+	backup[fd] = update_backup(backup[fd]);
 	return (line);
 }

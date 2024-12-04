@@ -6,7 +6,7 @@
 /*   By: aboukhmi <aboukhmi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:43:19 by aboukhmi          #+#    #+#             */
-/*   Updated: 2024/11/24 23:14:25 by aboukhmi         ###   ########.fr       */
+/*   Updated: 2024/11/25 19:36:35 by aboukhmi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,25 +22,6 @@ size_t	ft_strlen(const char *str)
 	while (str && str[i])
 		i++;
 	return (i);
-}
-
-char	*ft_calloc(size_t num, size_t size)
-{
-	char	*ptr;
-	size_t	i;
-
-	i = 0;
-	if (num && size > SIZE_MAX / num)
-		return (NULL);
-	ptr = malloc(num * size);
-	if (!ptr)
-		return (NULL);
-	while (i < size)
-	{
-		ptr[i] = 0;
-		i++;
-	}
-	return (ptr);
 }
 
 char	*ft_strdup(const char *s)
