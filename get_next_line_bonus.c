@@ -110,7 +110,7 @@ char	*get_next_line(int fd)
 	static char	*backup[OPEN_MAX];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE < 1 || BUFFER_SIZE > INT_MAX || fd > OPEN_MAX)
+	if (fd < 0 || BUFFER_SIZE < 1 || BUFFER_SIZE > INT_MAX || fd >= OPEN_MAX)
 		return (NULL);
 	backup[fd] = get_backup(fd, backup[fd]);
 	if (!backup[fd])
